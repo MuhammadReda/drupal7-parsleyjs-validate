@@ -2,7 +2,8 @@
 *.DS_Store
 /bower_components/*
 /.sass-cache/*
-/stylesheets/*
+/assets/js/
+/assets/css/
 _site
 css/app.css
 css/style.css

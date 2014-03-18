@@ -10,7 +10,7 @@ module.exports = function(grunt) {
     //   '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
     //   '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
     //   ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
-    banner: "<%= pkg.author.name %>\n",
+    banner: "/* <%= pkg.author.name %> <<%= pkg.author.email %>> - <%= grunt.template.today('yyyy-mm-dd') %> */\n",
     // Task configuration.
     concat: {
       options: {
