@@ -1,0 +1,15 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    <Muhammad Reda> -- <Lead Developer> -- <>
+
+# THANKS
+
+    <Muhammad Reda>
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    Normalize.css, Foundation, Angular, jQuery, Modernizr, Underscore
