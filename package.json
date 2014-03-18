@@ -1,8 +1,12 @@
 {
   "name": "drupal7-parsleyjs-validate-website",
+  "title": "Drupal7 ParsleyJS Validation Module",
   "description": "",
   "keywords": ["drupal", "drupal-7", "drupal-module", "drupal-validation"],
-  "author": "Muhammad Reda <say.hello@mreda.net>",
+  "author": {
+    "name": "Muhammad Reda",
+    "email": "say.hello@mreda.net"
+  },
   "homepage": "http://mreda.net/drupal7-parsleyjs-validate",
   "repository": {
     "type": "git",
