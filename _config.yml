@@ -1,3 +1,18 @@
-name: Your New Jekyll Site
+name: Drupal 7 ParsleyJS Validation Module
 markdown: redcarpet
 pygments: true
+
+exclude: [
+	'bower_components',
+	'scss',
+	'css',
+	'js',
+	'node_modules',
+	'Gruntfile.js',
+	'package.json',
+	'config.rb',
+	'bower.json',
+	'README.md'
+]
+include: ['.htaccess']
+keep_files: ['.git']
