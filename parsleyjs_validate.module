@@ -1,0 +1,256 @@
+<?php // $Id$
+
+
+function parsleyjs_validate_init() {
+    drupal_add_js(libraries_get_path('parsleyjs') . '/parsley.js');
+    //drupal_add_js("jQuery(window).load(function() {jQuery('form').parsley()});", "inline");
+}
+
+
+/**
+ * Implementation of hook_form_field_ui_field_edit_form_alter().
+ */
+function parsleyjs_validate_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+    if(in_array($form['#instance']['widget']['type'], _parsleyjs_validate_get_widget_keys()))
+    {
+        $parsleyjs_validate_enabled = isset($form['#instance']['parsleyjs_validate']['enabled'])
+            ? $form['#instance']['parsleyjs_validate']['enabled']
+            : false;
+
+        $states = array(
+            'visible'   => array(
+                ':input[name="instance[parsleyjs_validate][enabled]"]'   => array(
+                    'checked'       => true,
+                ),
+            ),
+        );
+
+        $form['instance']['parsleyjs_validate'] = array(
+            '#type'			=> 'fieldset',
+            '#title'		=> t('ParsleyJs Validate'),
+            '#weight'		=> 10,
+            '#collapsible'	=> true,
+            '#collapsed'	=> !$parsleyjs_validate_enabled,
+        );
+
+        $form['instance']['parsleyjs_validate']['enabled'] = array(
+            '#type'			=> 'checkbox',
+            '#title' 		=> t('Enable ParsleyJs'),
+            '#description' 	=> t('Enable ParsleyJs for this field.'),
+            '#weight' 		=> -100,
+            '#default_value'=> $parsleyjs_validate_enabled,
+        );
+
+        // parsley-trigger
+        $form['instance']['parsleyjs_validate']['parsley_trigger'] = array(
+            '#type'			=> 'textfield',
+            '#title' 		=> t('Enable ParsleyJs to this field.'),
+            '#description'  => t("Specify one or many javascript events that will trigger item validation.
+                eg: <em>parsley-trigger='change'</em>.
+                <br/>To set multiple events, separate them by a space. !link1.", array(
+                '!link1'    => l(t("See the various events supported by jQuery"), "http://api.jquery.com/category/events/"),
+            )),
+            '#weight' 		=> 0,
+            '#states'       => $states,
+            '#size'         => 25,
+            '#default_value'=> isset($form['#instance']['parsleyjs_validate']['parsley_trigger'])
+                    ? $form['#instance']['parsleyjs_validate']['parsley_trigger']
+                    : "focusout",
+        );
+
+        // parsley-type
+        $form['instance']['parsleyjs_validate']['parsley_type'] = array(
+            '#type'         => 'select',
+            '#title'        => t("Type"),
+            '#description'  => t("Sets the value of <b>parsley-type</b> property. !link1.", array(
+                '!link1'    => l(t("Parsley type constraints"), "http://parsleyjs.org/documentation.html#type-constraints"),
+            )),
+            '#weight'       => 10,
+            '#states'       => $states,
+            '#options'      => array(
+                null        => t("- None -"),
+                'email'     => t("Email"),
+                'url'       => t("URL"),
+                'urlstrict' => t("URL Strict"),
+                'digits'    => t("Digits"),
+                'number'    => t("Number"),
+                'alphanum'  => t("Alpha-Numeric"),
+                'dateIso'   => t("ISO Date"),
+                'phone'     => t("Phone"),
+            ),
+            '#default_value'=> isset($form['#instance']['parsleyjs_validate']['parsley_type'])
+                    ? $form['#instance']['parsleyjs_validate']['parsley_type']
+                    : null,
+        );
+
+        // parsley-required
+        $form['instance']['parsleyjs_validate']['parsley_required'] = array(
+            '#type'			=> 'checkbox',
+            '#title' 		=> t('Required'),
+            '#description' 	=> t('Validate that a required field has been filled.'),
+            '#weight' 		=> 20,
+            '#states'       => $states,
+            '#default_value'=> isset($form['#instance']['parsleyjs_validate']['parsley_required'])
+                    ? $form['#instance']['parsleyjs_validate']['parsley_required']
+                    : null,
+        );
+
+        // parsley-notblank
+        $form['instance']['parsleyjs_validate']['parsley_notblank'] = array(
+            '#type'			=> 'checkbox',
+            '#title' 		=> t('Not Blank'),
+            '#description' 	=> t('Validates that a value is not blank, defined as not equal to a blank string.'),
+            '#weight' 		=> 30,
+            '#states'       => $states,
+            '#default_value'=> isset($form['#instance']['parsleyjs_validate']['parsley_notblank'])
+                    ? $form['#instance']['parsleyjs_validate']['parsley_notblank']
+                    : null,
+        );
+
+        // parsley-regexp
+        $form['instance']['parsleyjs_validate']['parsley_regexp'] = array(
+            '#type'			=> 'textfield',
+            '#title' 		=> t('Regular Expression.'),
+            '#description'  => t("Validates that a value matches a specific regular expression."),
+            '#weight'       => 100,
+            '#states'       => $states,
+            '#size'         => 25,
+            '#default_value'=> isset($form['#instance']['parsleyjs_validate']['parsley_regexp'])
+                    ? $form['#instance']['parsleyjs_validate']['parsley_regexp']
+                    : null,
+        );
+
+        // parsley-regexp-flag
+        $form['instance']['parsleyjs_validate']['parsley_regexp_flag'] = array(
+            '#type'			=> 'textfield',
+            '#title' 		=> t('Regular expression flag.'),
+            '#description'  => t("Add a flag to Regexp() function."),
+            '#weight'       => 101,
+            '#states'       => $states,
+            '#size'         => 5,
+            '#default_value'=> isset($form['#instance']['parsleyjs_validate']['parsley_regexp_flag'])
+                    ? $form['#instance']['parsleyjs_validate']['parsley_regexp_flag']
+                    : null,
+        );
+
+//		dpm($form);
+	}
+}
+
+
+
+/**
+ * Implementation of hook_field_widget_form_alter().
+ */
+function parsleyjs_validate_field_widget_form_alter(&$element, &$form_state, $context)
+{
+    if (in_array($context['instance']['widget']['type'], _parsleyjs_validate_get_widget_keys())
+        && isset($context['instance']['parsleyjs_validate']))
+    {
+        if(isset($context['instance']['parsleyjs_validate']['enabled']) && $context['instance']['parsleyjs_validate']['enabled'] == true)
+        {
+//            dpm("element");
+//            dpm($element);
+//            dpm("form_state");
+//            dpm($form_state);
+//            dpm("context");
+//            dpm($context);
+
+            $form_state['parsleyjs-validate-form'] = true;
+
+            $widget_type = $context['instance']['widget']['type'];
+            $widget_target = _parsleyjs_validate_get_widget_target($widget_type);
+
+            // parsley-trigger
+            if(isset($context['instance']['parsleyjs_validate']['parsley_trigger']) && !empty($context['instance']['parsleyjs_validate']['parsley_trigger']))
+                $element[$widget_target]['#attributes']['parsley-trigger'] = $context['instance']['parsleyjs_validate']['parsley_trigger'];
+
+            // parsley-type
+            if(isset($context['instance']['parsleyjs_validate']['parsley_type']) && !empty($context['instance']['parsleyjs_validate']['parsley_type']))
+                $element[$widget_target]['#attributes']['parsley-type'] = $context['instance']['parsleyjs_validate']['parsley_type'];
+
+            // parsley-required
+            if(isset($context['instance']['parsleyjs_validate']['parsley_required']) && !empty($context['instance']['parsleyjs_validate']['parsley_required']))
+                $element[$widget_target]['#attributes']['parsley-required'] = $context['instance']['parsleyjs_validate']['parsley_required'];
+
+            // parsley-notblank
+            if(isset($context['instance']['parsleyjs_validate']['parsley_notblank']) && !empty($context['instance']['parsleyjs_validate']['parsley_notblank']))
+                $element[$widget_target]['#attributes']['parsley-notblank'] = $context['instance']['parsleyjs_validate']['parsley_notblank'];
+
+            // parsley-regexp
+            if(isset($context['instance']['parsleyjs_validate']['parsley_regexp']) && !empty($context['instance']['parsleyjs_validate']['parsley_regexp']))
+                $element[$widget_target]['#attributes']['parsley-regexp'] = $context['instance']['parsleyjs_validate']['parsley_regexp'];
+
+            // parsley-regexp-flag
+            if(isset($context['instance']['parsleyjs_validate']['parsley_regexp_flag']) && !empty($context['instance']['parsleyjs_validate']['parsley_regexp_flag']))
+                $element[$widget_target]['#attributes']['parsley-regexp-flag'] = $context['instance']['parsleyjs_validate']['parsley_regexp_flag'];
+
+            //$element[$widget_target]['#attributes']['parsley-error-container'] = "#edit-actions";
+
+        }
+    }
+}
+
+
+/**
+ * Implementation of hook_form_alter()
+ */
+function parsleyjs_validate_form_alter(&$form, &$form_state, $form_id)
+{
+    if(!empty($form_state['parsleyjs-validate-form']))
+        $form['#attributes']['parsley-validate'] = true;
+}
+
+
+
+
+/**
+ * Implementation of hook_parsleyjs_validate_widgets_and_targets()
+ */
+function parsleyjs_validate_parsleyjs_validate_widgets_and_targets()
+{
+    return array(
+        'text_textfield'    => 'value',
+        'text_textarea'     => 'value',
+        'number'            => 'value',
+        'email_textfield'   => 'email',
+        'text_textarea_with_summary' => 'summary',
+    );
+}
+
+
+
+/**
+ * Returns information about field widgets from hook_parsleyjs_validate_widgets_and_targets().
+ */
+function _parsleyjs_validate_get_all_widgets()
+{
+    $widgets = &drupal_static(__FUNCTION__);
+    if(!$widgets)
+    {
+        $widgets = module_invoke_all("parsleyjs_validate_widgets_and_targets");
+        $widgets = (is_array($widgets)) ? $widgets : array();
+    }
+    return $widgets;
+}
+
+
+
+/**
+ * Returns the widget target for a given widget.
+ */
+function _parsleyjs_validate_get_widget_target($widget)
+{
+    $widgets = _parsleyjs_validate_get_all_widgets();
+    return isset($widgets[$widget]) ? $widgets[$widget] : false;
+}
+
+
+/**
+ * Returns an array with names of all available widgets.
+ */
+function _parsleyjs_validate_get_widget_keys()
+{
+    $widgets = _parsleyjs_validate_get_all_widgets();
+    return array_keys($widgets);
+}
