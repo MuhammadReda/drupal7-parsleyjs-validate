@@ -3,7 +3,6 @@
 
 function parsleyjs_validate_init() {
     drupal_add_js(libraries_get_path('parsleyjs') . '/parsley.js');
-    //drupal_add_js("jQuery(window).load(function() {jQuery('form').parsley()});", "inline");
 }
 
 
@@ -132,8 +131,6 @@ function parsleyjs_validate_form_field_ui_field_edit_form_alter(&$form, &$form_s
                     ? $form['#instance']['parsleyjs_validate']['parsley_regexp_flag']
                     : null,
         );
-
-//		dpm($form);
 	}
 }
 
@@ -149,13 +146,6 @@ function parsleyjs_validate_field_widget_form_alter(&$element, &$form_state, $co
     {
         if(isset($context['instance']['parsleyjs_validate']['enabled']) && $context['instance']['parsleyjs_validate']['enabled'] == true)
         {
-//            dpm("element");
-//            dpm($element);
-//            dpm("form_state");
-//            dpm($form_state);
-//            dpm("context");
-//            dpm($context);
-
             $form_state['parsleyjs-validate-form'] = true;
 
             $widget_type = $context['instance']['widget']['type'];
@@ -207,8 +197,7 @@ function parsleyjs_validate_form_alter(&$form, &$form_state, $form_id)
 /**
  * Implementation of hook_parsleyjs_validate_widgets_and_targets()
  */
-function parsleyjs_validate_parsleyjs_validate_widgets_and_targets()
-{
+function parsleyjs_validate_parsleyjs_validate_widgets_and_targets() {
     return array(
         'text_textfield'    => 'value',
         'text_textarea'     => 'value',
@@ -223,8 +212,7 @@ function parsleyjs_validate_parsleyjs_validate_widgets_and_targets()
 /**
  * Returns information about field widgets from hook_parsleyjs_validate_widgets_and_targets().
  */
-function _parsleyjs_validate_get_all_widgets()
-{
+function _parsleyjs_validate_get_all_widgets() {
     $widgets = &drupal_static(__FUNCTION__);
     if(!$widgets)
     {
@@ -239,8 +227,7 @@ function _parsleyjs_validate_get_all_widgets()
 /**
  * Returns the widget target for a given widget.
  */
-function _parsleyjs_validate_get_widget_target($widget)
-{
+function _parsleyjs_validate_get_widget_target($widget) {
     $widgets = _parsleyjs_validate_get_all_widgets();
     return isset($widgets[$widget]) ? $widgets[$widget] : false;
 }
@@ -249,8 +236,7 @@ function _parsleyjs_validate_get_widget_target($widget)
 /**
  * Returns an array with names of all available widgets.
  */
-function _parsleyjs_validate_get_widget_keys()
-{
+function _parsleyjs_validate_get_widget_keys() {
     $widgets = _parsleyjs_validate_get_all_widgets();
     return array_keys($widgets);
 }
