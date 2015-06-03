@@ -10,8 +10,7 @@ function parsleyjs_validate_init() {
  * Implementation of hook_form_field_ui_field_edit_form_alter().
  */
 function parsleyjs_validate_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
-    if(in_array($form['#instance']['widget']['type'], _parsleyjs_validate_get_widget_keys()))
-    {
+    if(in_array($form['#instance']['widget']['type'], _parsleyjs_validate_get_widget_keys())) {
         $parsleyjs_validate_enabled = isset($form['#instance']['parsleyjs_validate']['enabled'])
             ? $form['#instance']['parsleyjs_validate']['enabled']
             : false;
@@ -131,7 +130,7 @@ function parsleyjs_validate_form_field_ui_field_edit_form_alter(&$form, &$form_s
                     ? $form['#instance']['parsleyjs_validate']['parsley_regexp_flag']
                     : null,
         );
-	}
+    }
 }
 
 
@@ -139,11 +138,10 @@ function parsleyjs_validate_form_field_ui_field_edit_form_alter(&$form, &$form_s
 /**
  * Implementation of hook_field_widget_form_alter().
  */
-function parsleyjs_validate_field_widget_form_alter(&$element, &$form_state, $context)
-{
+function parsleyjs_validate_field_widget_form_alter(&$element, &$form_state, $context) {
     if (in_array($context['instance']['widget']['type'], _parsleyjs_validate_get_widget_keys())
-        && isset($context['instance']['parsleyjs_validate']))
-    {
+        && isset($context['instance']['parsleyjs_validate'])) {
+
         if(isset($context['instance']['parsleyjs_validate']['enabled']) && $context['instance']['parsleyjs_validate']['enabled'] == true)
         {
             $form_state['parsleyjs-validate-form'] = true;
@@ -185,10 +183,10 @@ function parsleyjs_validate_field_widget_form_alter(&$element, &$form_state, $co
 /**
  * Implementation of hook_form_alter()
  */
-function parsleyjs_validate_form_alter(&$form, &$form_state, $form_id)
-{
-    if(!empty($form_state['parsleyjs-validate-form']))
+function parsleyjs_validate_form_alter(&$form, &$form_state, $form_id) {
+    if(!empty($form_state['parsleyjs-validate-form'])) {
         $form['#attributes']['parsley-validate'] = true;
+    }
 }
 
 
