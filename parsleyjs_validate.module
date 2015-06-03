@@ -2,7 +2,8 @@
 
 
 function parsleyjs_validate_init() {
-    drupal_add_js(libraries_get_path('parsleyjs') . '/parsley.js');
+    // @TODO: set the path through a variable.
+    drupal_add_js('sites/all/libraries/parsleyjs/parsley.js');
 }
 
 

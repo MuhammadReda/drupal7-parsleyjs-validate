@@ -4,4 +4,3 @@ description = none
 core = 7.x
 package = Validation
 
-dependencies[] = libraries
